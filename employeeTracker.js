@@ -41,7 +41,7 @@ function runSearch() {
         break;
 
       case "View All Employees By Department":
-        multiSearch();
+        viewByDepartment();
         break;
 
       case "View All Employeees By Manager":
@@ -74,12 +74,10 @@ function runSearch() {
 
 function viewAllEmployees() {
   var query = "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name, role.salary, employee.manager_id ";
-  // var query = "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name, role.salary, employee.manager_id, s.name AS supervisor ";
-
-
   query += "FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id GROUP BY employee.id";
-  // query += "FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id INNER JOIN employee s ON s.ID = employee.manager_id GROUP BY employee.id";
 
+  // var query = "SELECT e.first_name + ' ' + e.last_name AS employ, m.first_name + ' ' + m.last_name AS manage ";
+  // query += "FROM employee e INNER JOIN employee m ON m.id = e.manager_id  GROUP BY employee.id";
 
 
   connection.query(query, function(err, res) {
@@ -101,6 +99,39 @@ function viewAllEmployees() {
     console.table(employeeArray);
     runSearch();
   })
+}
+
+function viewByDepartment() {
+  inquirer
+    .prompt({
+      name: "department",
+      type: "input",
+      message: "Which department?"
+    })
+    .then(function(answer) {
+      var query = "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name, role.salary, employee.manager_id ";
+      query += "FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id WHERE name=? GROUP BY employee.id";
+    
+      connection.query(query, [answer.department], function(err, res) {
+        if (err) throw err;
+        // console.log(res);
+        var employeeArray = [];
+        for (var i = 0; i < res.length; i++) {
+          var obj = {
+            id: res[i].id,
+            first_name: res[i].first_name,
+            last_name: res[i].last_name,
+            title: res[i].title,
+            department: res[i].name,
+            salary: res[i].salary,
+            manager: res[i].manager_id
+          }
+          employeeArray.push(obj)
+        }
+        console.table(employeeArray);
+        runSearch();
+      })
+    })
 }
 
 function artistSearch() {
