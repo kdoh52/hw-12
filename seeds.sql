@@ -2,18 +2,18 @@ USE employee_db;
 
 TRUNCATE TABLE department;
 
-INSERT INTO department (name) VALUES ("management");
-INSERT INTO department (name) VALUES ("sales");
-INSERT INTO department (name) VALUES ("accounting");
+INSERT INTO department (name) VALUES ("Management");
+INSERT INTO department (name) VALUES ("Sales");
+INSERT INTO department (name) VALUES ("Accounting");
 
 
 TRUNCATE TABLE role;
 
-INSERT INTO role (title, salary, department_id) VALUES ("regional manager", "80", "1");
-INSERT INTO role (title, salary, department_id) VALUES ("assistant regional manager", "60", "1");
-INSERT INTO role (title, salary, department_id) VALUES ("salesperson", "50", "2");
-INSERT INTO role (title, salary, department_id) VALUES ("sales rep", "45", "2");
-INSERT INTO role (title, salary, department_id) VALUES ("accountant", "50", "3");
+INSERT INTO role (title, salary, department_id) VALUES ("Regional Manager", "80000", "1");
+INSERT INTO role (title, salary, department_id) VALUES ("Assistant Regional Manager", "60000", "1");
+INSERT INTO role (title, salary, department_id) VALUES ("Salesperson", "50000", "2");
+INSERT INTO role (title, salary, department_id) VALUES ("Sales Representative", "45000", "2");
+INSERT INTO role (title, salary, department_id) VALUES ("Accountant", "50000", "3");
 
 
 TRUNCATE TABLE employee;

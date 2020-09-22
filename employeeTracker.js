@@ -45,7 +45,7 @@ function runSearch() {
         break;
 
       case "View All Employeees By Manager":
-        rangeSearch();
+        viewByManager();
         break;
 
       case "Add Employee":
@@ -53,11 +53,11 @@ function runSearch() {
         break;
 
       case "Remove Employee":
-        songSearch();
+        removeEmployee();
         break;
 
       case "Update Employee Role":
-        songSearch();
+        updateRole();
         break;
     
       case "Update Employee Manager":
@@ -102,11 +102,23 @@ function viewAllEmployees() {
 }
 
 function viewByDepartment() {
+  
+  // connection.query("SELECT department.name FROM department", function(err, res) {
+  //   if (err) throw err;
+  //   return (res);
+  // });
+  
   inquirer
+    // .prompt({
+    //   name: "department",
+    //   type: "input",
+    //   message: "Which department?"
+    // })
     .prompt({
       name: "department",
-      type: "input",
-      message: "Which department?"
+      type: "list",
+      message: "Which department?",
+      choices: ["Management", "Sales", "Accounting"]
     })
     .then(function(answer) {
       var query = "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name, role.salary, employee.manager_id ";
@@ -133,6 +145,91 @@ function viewByDepartment() {
       })
     })
 }
+
+
+function removeEmployee() {
+  inquirer
+    .prompt([
+      {
+        name: "firstName",
+        type: "input",
+        message: "Employee's first name?"
+      },
+      {
+        name: "lastName",
+        type: "input",
+        message: "Employee's last name?"
+      }
+    ])
+    .then(function(answer) {
+      let query = "DELETE FROM employee WHERE first_name=? AND last_name=?";
+      connection.query(query, [answer.firstName, answer.lastName], function(err, res) {
+        // console.log("deleted lol");
+        runSearch();
+      })
+    })
+}
+
+function updateRole() {
+  inquirer
+    .prompt([
+      {
+        name: "firstName",
+        type: "input",
+        message: "Employee's first name?"
+      },
+      {
+        name: "lastName",
+        type: "input",
+        message: "Employee's last name?"
+      },
+      {
+        name: "role",
+        type: "list",
+        message: "New role?",
+        choices: [
+          "Regional Manager",
+          "Assistant Regional Manager",
+          "Salesperson",
+          "Sales Representative",
+          "Accountant"
+        ]
+      }
+    ])
+    .then(function(answer) {
+      let query = "UPDATE employee SET role_id=? WHERE first_name=? AND last_name=?";
+      let roleID
+      if (answer.role === "Regional Manager") {
+        roleID = 1;
+      } else if (answer.role === "Assistant Regional Manager") {
+        roleID = 2;
+      } else if (answer.role === "Salesperson") {
+        roleID = 3;
+      } else if (answer.role === "Sales Representative") {
+        roleID = 4;
+      } else if (answer.role === "Accountant") {
+        roleID = 5;
+      }
+      connection.query(query, [roleID, answer.firstName, answer.lastName], function(err, res) {
+        console.log("updated lol");
+        runSearch();
+      })
+    })
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function artistSearch() {
   inquirer
