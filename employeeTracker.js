@@ -214,12 +214,53 @@ function updateRole() {
         roleID = 5;
       }
       connection.query(query, [roleID, answer.firstName, answer.lastName], function(err, res) {
-        console.log("updated lol");
+        // console.log("updated lol");
         runSearch();
       })
     })
 }
 
+
+function updateManager() {
+  inquirer
+    .prompt([
+      {
+        name: "firstName",
+        type: "input",
+        message: "Employee's first name?"
+      },
+      {
+        name: "lastName",
+        type: "input",
+        message: "Employee's last name?"
+      },
+      {
+        name: "managerFirst",
+        type: "input",
+        message: "Manager's first name?"
+      },
+      {
+        name: "managerLast",
+        type: "input",
+        message: "Manager's last name?"
+      }
+    ])
+    .then(function(answer) {
+      let managerID
+      let managerQuery = "SELECT employee.id FROM employee WHERE first_name=? AND last_name=?"
+      connection.query(managerQuery, [answer.managerFirst, answer.managerLast], function(err, res) {
+        managerID = res[0].id;
+        console.log(managerID)
+
+        let query = "UPDATE employee SET manager_id=? WHERE first_name=? AND last_name=?";
+        connection.query(query, [managerID, answer.firstName, answer.lastName], function(err, res) {
+          // console.log("updated lol");
+          runSearch();
+        })
+      })
+
+    })
+}
 
 
 
