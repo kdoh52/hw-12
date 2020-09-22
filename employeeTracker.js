@@ -49,7 +49,7 @@ function runSearch() {
         break;
 
       case "Add Employee":
-        songSearch();
+        addEmployee();
         break;
 
       case "Remove Employee":
@@ -61,7 +61,7 @@ function runSearch() {
         break;
     
       case "Update Employee Manager":
-        songSearch();
+        updateManager();
         break;
 
       case "exit":
@@ -73,12 +73,11 @@ function runSearch() {
 
 
 function viewAllEmployees() {
-  var query = "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name, role.salary, employee.manager_id ";
-  query += "FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id GROUP BY employee.id";
+  // var query = "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name, role.salary, employee.manager_id ";
+  // query += "FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id GROUP BY employee.id";
 
-  // var query = "SELECT e.first_name + ' ' + e.last_name AS employ, m.first_name + ' ' + m.last_name AS manage ";
-  // query += "FROM employee e INNER JOIN employee m ON m.id = e.manager_id  GROUP BY employee.id";
-
+  var query = "SELECT e.id, e.first_name, e.last_name, role.title, department.name, role.salary, e.manager_id, CONCAT(m.first_name, ' ', m.last_name) AS manager_name ";
+  query += "FROM employee e LEFT JOIN role ON e.role_id = role.id LEFT JOIN department ON role.department_id = department.id INNER JOIN employee m ON m.id = e.manager_id GROUP BY e.id"
 
   connection.query(query, function(err, res) {
     if (err) throw err;
@@ -92,7 +91,7 @@ function viewAllEmployees() {
         title: res[i].title,
         department: res[i].name,
         salary: res[i].salary,
-        manager: res[i].manager_id
+        manager: res[i].manager_name
       }
       employeeArray.push(obj)
     }
@@ -121,8 +120,12 @@ function viewByDepartment() {
       choices: ["Management", "Sales", "Accounting"]
     })
     .then(function(answer) {
-      var query = "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name, role.salary, employee.manager_id ";
-      query += "FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id WHERE name=? GROUP BY employee.id";
+      var query = "SELECT e.id, e.first_name, e.last_name, role.title, department.name, role.salary, e.manager_id, CONCAT(m.first_name, ' ', m.last_name) AS manager_name ";
+      query += "FROM employee e LEFT JOIN role ON e.role_id = role.id LEFT JOIN department ON role.department_id = department.id INNER JOIN employee m ON m.id = e.manager_id WHERE name=? GROUP BY e.id"
+
+      // var query = "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name, role.salary, employee.manager_id, e.first_name + ' ' + e.last_name employ, m.first_name + ' ' + m.last_name AS manager ";
+      // query += "FROM employee e LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id WHERE name=? INNER JOIN employee m ON m.id = e.manager_id GROUP BY employee.id";
+
     
       connection.query(query, [answer.department], function(err, res) {
         if (err) throw err;
@@ -136,7 +139,7 @@ function viewByDepartment() {
             title: res[i].title,
             department: res[i].name,
             salary: res[i].salary,
-            manager: res[i].manager_id
+            manager: res[i].manager_name
           }
           employeeArray.push(obj)
         }
